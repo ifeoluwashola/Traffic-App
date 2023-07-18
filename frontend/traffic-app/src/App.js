@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
 function App() {
+  const [mapHtml, setMapHtml] = useState('');
+  const [start, setStart] = useState('');
+  const [end, setEnd] = useState('');
+
+  const handleSubmit = () => {
+    fetch(`http://localhost:8000/route/?start=${start}&end=${end}`)
+      .then(response => response.json())
+      .then(data => {
+        setMapHtml(data.map);
+      });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Route Map</h1>
+      <div>
+        <input 
+          type="text"
+          value={start}
+          onChange={e => setStart(e.target.value)}
+          placeholder="Start location"
+        />
+        <input 
+          type="text"
+          value={end}
+          onChange={e => setEnd(e.target.value)}
+          placeholder="End location"
+        />
+        <button onClick={handleSubmit}>Submit</button>
+      </div>
+      <iframe srcDoc={mapHtml} width="100%" height="600" />
     </div>
   );
 }
